@@ -1,32 +1,21 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from tkinter import messagebox
 from .scraping_data import ScrapingData
+from .driver import Driver as dr
 
-def open() :
-    print('===========取引情報取得　開始===========')
-    result = True
+def open(url) :
+    print('===========Chromeを開く===========')
+    userprofile = r"%USERPROFILE%\AppData\Local\Google\Chrome\User Data"
     # 起動時にオプションをつける。（ポート指定により、起動済みのブラウザのドライバーを取得）
     options = webdriver.ChromeOptions()
-    options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
-    driver = webdriver.Chrome(options)
-    
-    cur_url = driver.current_url
-    print(cur_url)
-    if "https://jp.mercari.com/" in cur_url:
-        set_mercari_data(driver)
-    elif "https://www.yahoo.co.jp" in cur_url:
-        set_paypay_data(driver)
-    else :
-        messagebox.showwarning('URL不正', f'メルカリかペイペイフリマの取引画面を開いてください。{cur_url}')
-        result = False
-    
-    print('===========取引情報取得　終了===========')
-    return result
+    options.add_argument("--user-data-dir=" + userprofile)
+    options.add_argument('--profile-directory=Profile1')
+    dr.driver = webdriver.Chrome(options)
+    dr.driver.get(url)
 
 # メルカリのデータ取得
-def set_mercari_data(driver) :
-    
+def set_mercari_data() :
+    driver = dr.driver
     date = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[5]/div[2]/span').text
     price = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[1]/div[2]/span/span/span[2]').text
     commission = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[2]/div[2]/span/span/span[2]').text
