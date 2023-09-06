@@ -1,89 +1,65 @@
-import datetime
-
 class ScrapingData :
     
-    date = ''
-    name = ''
-    price = 0
-    commission = 0
-    customer = ''
-    postcode = ''
-    address1 = ''
-    address2 = ''
-    code = ''
-    
-    @staticmethod
-    def set_scraping_data(date, name, price, commission, customer, postcode, address1, address2, code):
-        ScrapingData.date = date
-        ScrapingData.name = name
-        ScrapingData.price = price
-        ScrapingData.commission = commission
-        ScrapingData.customer = customer
-        ScrapingData.postcode = postcode
-        ScrapingData.address1 = address1
-        ScrapingData.address2 = address2
-        ScrapingData.code = code
+    def __init__(self, date, name, price, commission, customer, postcode, address1, address2, code) :
+        self.date = date
+        self.name = name
+        self.price = price
+        self.commission = commission
+        self.customer = customer
+        self.postcode = postcode
+        self.address1 = address1
+        self.address2 = address2
+        self.code = code
         
-    @staticmethod
-    def get_date():
-        if not ScrapingData.date:
+    def get_date(self):
+        if not self.date:
             return ''
         else:
-            date = ScrapingData.date
+            date = self.date
             date_array = date.split(' ')
             return date_array[0][5:]
     
-    @staticmethod
-    def get_name():
-        return ScrapingData.name
+    def get_name(self):
+        return self.name
     
-    @staticmethod
-    def get_price():
-        price = ScrapingData.price
+    def get_price(self):
+        price = self.price
         price = price.replace(',', '')
         return int(price)
     
-    @staticmethod
-    def get_commission():
-        commission = ScrapingData.commission
+    def get_commission(self):
+        commission = self.commission
         commission = commission.replace(',', '')
         return int(commission)
     
     # '様'を取り除く
-    @staticmethod
-    def get_customer():
-        if not ScrapingData.customer:
+    def get_customer(self):
+        if not self.customer:
             return ''
         else:
-            customer = ScrapingData.customer
+            customer = self.customer
             return customer[0: len(customer) - 2]
     
-    @staticmethod
-    def get_customer_full():
-        return ScrapingData.customer
+    def get_customer_full(self):
+        return self.customer
     
-    @staticmethod
-    def get_postcode():
-        return ScrapingData.postcode
+    def get_postcode(self):
+        return self.postcode
     
     # '〇〇県'のみ取得
-    @staticmethod
-    def get_address():
-        if not ScrapingData.address1:
+    def get_address(self):
+        if not self.address1:
             return ''
         else:
-            address = ScrapingData.address1
+            address = self.address1
             address_array = address.split(' ')
             return address_array[0]
     
-    @staticmethod
-    def get_address1():
+    def get_address1(self):
         return ScrapingData.address1
     
-    @staticmethod
-    def get_address2():
+    def get_address2(self):
         return ScrapingData.address2
     
-    @staticmethod
-    def get_code():
+    def get_code(self):
         return ScrapingData.code

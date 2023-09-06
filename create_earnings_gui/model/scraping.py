@@ -2,16 +2,28 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from .scraping_data import ScrapingData
 from .driver import Driver as dr
+from ..view.scraping_data_view import ScrapingDataList
+from ..view.alert_view import AlertView
 
 def open(url) :
     print('===========Chromeを開く===========')
     userprofile = r"%USERPROFILE%\AppData\Local\Google\Chrome\User Data"
-    # 起動時にオプションをつける。（ポート指定により、起動済みのブラウザのドライバーを取得）
     options = webdriver.ChromeOptions()
     options.add_argument("--user-data-dir=" + userprofile)
-    options.add_argument('--profile-directory=Profile1')
+    options.add_argument('--profile-directory=Profile1') #アプリ用のプロファイルを使う
     dr.driver = webdriver.Chrome(options)
     dr.driver.get(url)
+
+def set_data() :
+    #cur_url = dr.driver.current_url
+    cur_url = "aaa"
+    print(cur_url)
+    if "https://jp.mercari.com/" in cur_url:
+        set_mercari_data()
+    elif "https://www.yahoo.co.jp" in cur_url:
+        set_paypay_data()
+    else:
+        AlertView.open("メルカリかペイペイフリマの取引画面を開いてください")
 
 # メルカリのデータ取得
 def set_mercari_data() :
@@ -45,8 +57,7 @@ def set_mercari_data() :
     print(address)
     print(code)
     
-    scraping = ScrapingData()
-    scraping.set_scraping_data(
+    scraping = ScrapingData(
         date = date, 
         name = name, 
         price = price, 
@@ -55,7 +66,10 @@ def set_mercari_data() :
         postcode = postcode, 
         address1 = address1, 
         address2 = address2, 
-        code = code)
+        code = code
+    )
+    ScrapingDataList.dataList.append(scraping)
+
 
 # ペイペイフリマのデータ取得
 def set_paypay_data(driver) :

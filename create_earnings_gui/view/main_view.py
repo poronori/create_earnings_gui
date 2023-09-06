@@ -1,5 +1,6 @@
 import flet as ft
-from ..model.scraping import open,set_mercari_data
+from ..model.scraping import open,set_data
+from .alert_view import AlertView
 
 def main(page):
     page.title = "Flet counter example"
@@ -7,7 +8,8 @@ def main(page):
 
     # 値を動的にしたい部分のControlインスタンスを作成
     txt_number = ft.TextField(value="0", text_align=ft.TextAlign.RIGHT, width=100)
-
+    alart = AlertView()
+    
     # マイナスボタンクリック時の処理
     def minus_click(e):
         #Controlインスタンスのvalueプロパティに代入
@@ -24,7 +26,10 @@ def main(page):
         open("https://wwww.yahoo.co.jp")
     
     def game_click(e):
-        set_mercari_data()
+        set_data()
+    
+    def add_click(e):
+        set_data()
 
     page.add(
         ft.Column(
@@ -42,3 +47,5 @@ def main(page):
             alignment=ft.MainAxisAlignment.CENTER,
         )
     )
+    page.add(alart)
+    page.dialog = alart
