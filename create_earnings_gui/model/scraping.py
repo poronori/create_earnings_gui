@@ -7,26 +7,28 @@ from ..view.alert_view import AlertView
 
 def open(url) :
     print('===========Chromeを開く===========')
-    userprofile = r"%USERPROFILE%\AppData\Local\Google\Chrome\User Data"
+    userprofile = r"%USERINFO%\AppData\Local\Google\Chrome\User Data"
     options = webdriver.ChromeOptions()
     options.add_argument("--user-data-dir=" + userprofile)
     options.add_argument('--profile-directory=Profile1') #アプリ用のプロファイルを使う
     dr.driver = webdriver.Chrome(options)
     dr.driver.get(url)
 
-def set_data() :
-    #cur_url = dr.driver.current_url
-    cur_url = "aaa"
+def get_data() :
+    scraping = None
+    cur_url = dr.driver.current_url
     print(cur_url)
     if "https://jp.mercari.com/" in cur_url:
-        set_mercari_data()
+        scraping = get_mercari_data()
     elif "https://www.yahoo.co.jp" in cur_url:
-        set_paypay_data()
+        scraping = get_paypay_data()
     else:
         AlertView.open("メルカリかペイペイフリマの取引画面を開いてください")
+    
+    return scraping
 
 # メルカリのデータ取得
-def set_mercari_data() :
+def get_mercari_data() :
     driver = dr.driver
     date = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[5]/div[2]/span').text
     price = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[1]/div[2]/span/span/span[2]').text
@@ -68,11 +70,10 @@ def set_mercari_data() :
         address2 = address2, 
         code = code
     )
-    ScrapingDataList.dataList.append(scraping)
-
+    return scraping
 
 # ペイペイフリマのデータ取得
-def set_paypay_data(driver) :
+def get_paypay_data(driver) :
     date = '2023年9月1日 12:05'
     name = 'ペイペイの品名'
     price = '2,000'
@@ -92,3 +93,4 @@ def set_paypay_data(driver) :
         postcode = postcode, 
         address = address, 
         code = code)
+    return scraping

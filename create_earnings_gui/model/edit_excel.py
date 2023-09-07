@@ -4,7 +4,7 @@ import datetime
 from copy import copy
 from .scraping_data import ScrapingData
 
-def edit() : 
+def edit(dataList) : 
     print('===========エクセルに記入 開始===========')
     
     #設定ファイルからエクセルのパスを取得
@@ -15,28 +15,29 @@ def edit() :
     wb = openpyxl.load_workbook(excel_path)
     
     #販売リスト
-    add_create_list(wb)
+    for data in dataList:
+        add_create_list(wb, data)
     #宛名
     ws = wb['宛名']
-    edit_addressee(ws)
+    edit_addressee(ws, dataList)
     ws = wb['宛名 圧迫厳禁']
-    edit_addressee(ws)
+    edit_addressee(ws, dataList)
 
     wb.save(excel_path)
     
     print('===========エクセルに記入 終了===========')
 
 # 販売リストに追記
-def add_create_list(wb):
+def add_create_list(wb, data:ScrapingData):
     
-    date = ScrapingData.get_date()
-    name = ScrapingData.get_name()
-    price = ScrapingData.get_price()
-    commission = ScrapingData.get_commission()
-    customer = ScrapingData.get_customer()
-    address = ScrapingData.get_address()
-    code = ScrapingData.get_code()
-    current_year = datetime.date.today().year
+    date = data.get_date()
+    name = data.get_name()
+    price = data.get_price()
+    commission = data.get_commission()
+    customer = data.get_customer()
+    address = data.get_address()
+    code = data.get_code()
+    current_year = data.date.today().year
     
     print('購入日：   ' + date)
     print('品名：     ' + name)
@@ -90,16 +91,54 @@ def add_create_list(wb):
     ws.cell(row = nextRow, column = 11).value = address      #住所
     ws.cell(row = nextRow, column = 12).value = code         #コード
 
-def edit_addressee(ws):
-    postcode = ScrapingData.postcode
-    address1 = ScrapingData.get_address1()
-    address2 = ScrapingData.get_address2()
-    customer = ScrapingData.get_customer_full()
+def edit_addressee(ws, dataList):
     
-    ws['B2'].value = postcode
-    ws['B3'].value = address1
-    ws['B4'].value = address2
-    ws['B6'].value = customer
+    i = 1
+    column = 2
+    row = 2
+    
+    for data in dataList:
+        
+        #3件目以降は書式をコピーする
+        if i > 1:
+            #基準は左上のセル
+            for base_row in range(2, 12):
+                for base_column in range(2, 4):
+                    #偶数件目なら右側に追加
+                    if i % 2 == 0:
+                        ws.cell(row = base_row + row - 2, column = base_column + 4).border = copy(ws.cell(row = base_row, column = base_column).border)
+                        ws.cell(row = base_row + row - 2, column = base_column + 4)._style = copy(ws.cell(row = base_row, column = base_column)._style)
+                    #奇数件目なら左下に追加
+                    else:
+                        ws.cell(row = base_row + row - 2, column = base_column).border = copy(ws.cell(row = base_row, column = base_column).border)
+                        ws.cell(row = base_row + row - 2, column = base_column)._style = copy(ws.cell(row = base_row, column = base_column)._style)
+            
+            #自宅アドレスのセルは値もコピーする
+            for base_row in range(8, 12):
+                if i % 2 == 0:
+                    ws.cell(row = base_row, column = base_column + 4).value = copy(ws.cell(row = base_row, column = base_column).border)
+                else:
+                    ws.cell(row = base_row + 12, column = base_column).border = copy(ws.cell(row = base_row, column = base_column).border)
+            
+        
+        postcode = data.postcode
+        address1 = data.get_address1()
+        address2 = data.get_address2()
+        customer = data.get_customer_full()
+        
+        ws.cell(row = row, column = column).value = postcode
+        ws.cell(row = row + 1, column = column).value = address1
+        ws.cell(row = row + 2, column = column).value = address2
+        ws.cell(row = row + 4, column = column).value = customer
+        
+        #奇数件数の場合は横にずれる
+        if i % 2 == 0:
+            column += 4
+        #偶数件数の場合は左下にずれる
+        else:
+            row += 12
+            column -= 4
+        i += 1
 
 #日時を〇月×日にフォーマット
 def string_to_datetime(date_string) :

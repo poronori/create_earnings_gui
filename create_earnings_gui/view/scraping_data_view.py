@@ -4,12 +4,19 @@ from ..model.scraping_data import ScrapingData
 # データリストのビュー
 class ScrapingDataList(ft.UserControl):
     
-    def __init__(self):
+    def __init__(self, delete):
         super().__init__(self)
         self.dataList = []
         self.dataListView = ft.Column()
+        self.delete = delete # 親画面更新用
+    
+    def get_dataList(self):
+        return self.dataList
     
     def add_data(self, data):
+        #保持用のデータに追加
+        self.dataList.append(data)
+        #画面表示用のデータに追加
         dataView = ScrapingDataView(data, self.data_delete)
         self.dataListView.controls.append(dataView)
         self.dataListView.update()
@@ -17,9 +24,16 @@ class ScrapingDataList(ft.UserControl):
     def build(self):
         return self.dataListView
     
-    def data_delete(self, data):
-        self.dataListView.controls.remove(data)
+    #削除処理
+    def data_delete(self, data, view_data):
+        #保持用のデータから削除
+        self.dataList.remove(data)
+        #画面から削除
+        self.dataListView.controls.remove(view_data)
         self.update()
+        #データがなくなったら親画面も更新
+        if len(self.dataList) == 0:
+            self.delete()
 
 #個別のデータビュー
 class ScrapingDataView(ft.UserControl):
@@ -36,10 +50,9 @@ class ScrapingDataView(ft.UserControl):
         self.address2 = ft.Text(f'住所２：{data.get_address2()}')
         self.code = ft.Text(f'コード：{data.get_code()}')
         
+        # 削除用の変数
+        self.data = data
         self.data_delete = data_delete
-        
-    def delete_click(self, e):
-        self.data_delete(self)
     
     def build(self):
         return ft.Row(
@@ -66,3 +79,6 @@ class ScrapingDataView(ft.UserControl):
                 ),
             ]
         )
+    
+    def delete_click(self, e):
+        self.data_delete(self.data, self)
