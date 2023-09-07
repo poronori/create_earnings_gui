@@ -5,23 +5,13 @@ from .scraping_data_view import ScrapingDataList
 from ..model.scraping_data import ScrapingData
 
 def main(page):
-    page.title = "Flet counter example"
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.title = "取引管理ツール"
+    page.vertical_alignment = ft.CrossAxisAlignment.CENTER
 
-    # 値を動的にしたい部分のControlインスタンスを作成
-    txt_number = ft.TextField(value="0", text_align=ft.TextAlign.RIGHT, width=100)
     alart = AlertView()
     dataList = ScrapingDataList()
     
-    # マイナスボタンクリック時の処理
-    def minus_click(e):
-        #Controlインスタンスのvalueプロパティに代入
-        txt_number.value = str(int(txt_number.value) - 1) 
-        #ページを更新。(txt_number.update()としても良い。updateは子要素に伝達する)
-        page.update() 
-
-    # プラスボタンクリック時の処理
-    def plus_click(e):
+    def add_click(e):
         data = ScrapingData(
             date = '2023年9月1日 12:05',
             name = 'ペイペイの品名',
@@ -35,31 +25,18 @@ def main(page):
         )
         dataList.add_data(data)
         page.update()
-        
-    def cabin_click(e):
-        open("https://wwww.yahoo.co.jp")
     
-    def game_click(e):
-        set_data()
-    
-    def add_click(e):
-        set_data()
-        
+    capture_buttom = ft.ElevatedButton("データ取込", icon=ft.icons.ADD, on_click=add_click)
     page.add(
         ft.Column(
             [
-                dataList,
                 ft.Row(
                     [
-                        ft.IconButton(ft.icons.REMOVE, on_click=minus_click),
-                        txt_number,
-                        ft.IconButton(ft.icons.ADD, on_click=plus_click),
-                    ],
+                        capture_buttom
+                    ]
                 ),
-                ft.IconButton(ft.icons.CABIN, on_click=cabin_click),
-                ft.IconButton(ft.icons.GAMEPAD, on_click=game_click),
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
+                dataList
+            ]
         )
     )
     page.add(alart)
