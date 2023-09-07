@@ -56,10 +56,10 @@ class ScrapingData :
             return address_array[0]
     
     def get_address1(self):
-        return ScrapingData.address1
+        return self.address1
     
     def get_address2(self):
-        return ScrapingData.address2
+        return self.address2
     
     def get_code(self):
-        return ScrapingData.code
+        return self.code
