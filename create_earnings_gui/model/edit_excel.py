@@ -19,9 +19,9 @@ def edit(dataList) :
         add_create_list(wb, data)
     #宛名
     ws = wb['宛名']
-    edit_addressee(ws, dataList)
+    edit_addressee_atena(ws, dataList)
     ws = wb['宛名 圧迫厳禁']
-    edit_addressee(ws, dataList)
+    edit_addressee_appaku(ws, dataList)
 
     wb.save(excel_path)
     
@@ -90,6 +90,50 @@ def add_create_list(wb, data:ScrapingData):
     ws.cell(row = nextRow, column = 10).value = customer     #購入者
     ws.cell(row = nextRow, column = 11).value = address      #住所
     ws.cell(row = nextRow, column = 12).value = code         #コード
+
+# 宛名シート
+def edit_addressee_atena(ws, dataList):
+    
+    # 1件目のみ挿入
+    data = dataList[0]
+    postcode = data.postcode
+    address1 = data.get_address1()
+    address2 = data.get_address2()
+    customer = data.get_customer_full()
+    
+    ws.cell(row = 2, column = 2).value = postcode
+    ws.cell(row = 3, column = 2).value = address1
+    ws.cell(row = 4, column = 2).value = address2
+    ws.cell(row = 6, column = 2).value = customer
+
+# 宛名 圧迫厳禁シート
+def edit_addressee_appaku(ws, dataList):
+    
+    i = 1
+    column = 2
+    row = 2
+    
+    for data in dataList:
+        
+        # 4件目まで挿入
+        while i <= 4:
+            postcode = data.postcode
+            address1 = data.get_address1()
+            address2 = data.get_address2()
+            customer = data.get_customer_full()
+
+            ws.cell(row = row, column = column).value = postcode
+            ws.cell(row = row + 1, column = column).value = address1
+            ws.cell(row = row + 2, column = column).value = address2
+            ws.cell(row = row + 4, column = column).value = customer
+            
+            #2件目と4件目は下に、3件目は右上に移動
+            if i % 2 == 0:
+                row -= 12
+                column += 4
+            else:
+                row += 12
+            i += 1
 
 def edit_addressee(ws, dataList):
     
