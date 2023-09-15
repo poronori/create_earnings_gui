@@ -61,23 +61,33 @@ def main(page):
     def write_click(e):
         edit(dataList)
     
-    capture_button = ft.ElevatedButton("データ取込", icon=ft.icons.ADD, on_click=add_click, disabled = True)
-    mercari_button = ft.ElevatedButton("メルカリを開く", on_click=mercari_click)
+    capture_button = ft.ElevatedButton("データ取込", icon=ft.icons.ADD, on_click=add_click, disabled = False)
+    mercari_button = ft.ElevatedButton("メルカリを開く", icon=ft.icons.CLOUD_CIRCLE, on_click=mercari_click)
     write_button = ft.ElevatedButton("エクセルに書き込む", icon=ft.icons.NOTE_ADD, on_click=write_click, disabled=True)
     
     page.add(
-        ft.Column(
-            [
-                ft.Row(
-                    [
-                        mercari_button,
-                        capture_button,
-                        write_button
-                    ]
-                ),
-                dataList
-            ]
-        )
+        ft.Container(
+            margin=10,
+            height=page.window_height - 60,
+            content=ft.Column(
+                controls=[
+                    ft.Row(
+                        controls=[
+                            mercari_button,
+                            capture_button,
+                            write_button
+                        ]
+                    ),
+                    ft.Column(
+                        scroll=ft.ScrollMode.AUTO,
+                        expand=True,
+                        controls=[
+                            dataList
+                        ]
+                    )
+                ]
+            )
+        ),
     )
     page.add(alart)
     page.dialog = alart

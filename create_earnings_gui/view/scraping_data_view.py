@@ -7,7 +7,7 @@ class ScrapingDataList(ft.UserControl):
     def __init__(self, delete):
         super().__init__(self)
         self.dataList = []
-        self.dataListView = ft.Column(scroll=ft.ScrollMode.AUTO, height=500)
+        self.dataListView = ft.Column()
         self.delete = delete # 親画面更新用
     
     def get_dataList(self):
@@ -55,11 +55,9 @@ class ScrapingDataView(ft.UserControl):
         self.data_delete = data_delete
     
     def build(self):
-        return ft.Container(
+        return ft.Card(ft.Container(
                 expand=True,
                 margin=10,
-                padding=10,
-                bgcolor=ft.colors.AMBER_100,
                 border_radius=10,
                 alignment=ft.alignment.top_center,
                 content=ft.Row(
@@ -67,26 +65,27 @@ class ScrapingDataView(ft.UserControl):
                     vertical_alignment=ft.CrossAxisAlignment.CENTER,
                     controls=[
                         ft.Column(
-                        [
-                            self.date,
-                            self.name,
-                            self.price,
-                            self.commission,
-                            self.customer,
-                            self.postcode,
-                            self.address1,
-                            self.address2,
-                            self.code
-                        ]
-                    ),
-                    ft.IconButton(
-                        ft.icons.DELETE_OUTLINE,
-                        tooltip="Delete Data",
-                        on_click=self.delete_click,
-                    ),
-                ]
-            )
-        )
+                            spacing=0,
+                            controls=[
+                                self.date,
+                                self.name,
+                                self.price,
+                                self.commission,
+                                self.customer,
+                                self.postcode,
+                                self.address1,
+                                self.address2,
+                                self.code
+                            ]
+                        ),
+                        ft.IconButton(
+                            ft.icons.DELETE_OUTLINE,
+                            tooltip="Delete Data",
+                            on_click=self.delete_click,
+                        ),
+                    ]
+                )
+            ))
     
     def delete_click(self, e):
         self.data_delete(self.data, self)
