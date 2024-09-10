@@ -10,7 +10,7 @@ class AlertView(ft.UserControl) :
     
     def __init__(self):
         super().__init__(self)
-        AlertView.dlg.actions = [ft.TextButton("Cancel", on_click=AlertView.close)]
+        AlertView.dlg.actions = [ft.TextButton("OK", on_click=AlertView.close)]
     
     def build(self) :
         return self.dlg

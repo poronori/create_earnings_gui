@@ -9,7 +9,7 @@ from ..model.scraping_data import ScrapingData
 def main(page):
     page.title = "取引管理ツール"
     page.vertical_alignment = ft.CrossAxisAlignment.CENTER
-    
+
     # データがなくなったらボタンを押せなくする
     def delete():
         write_button.disabled = True
@@ -59,9 +59,10 @@ def main(page):
             page.update()
     
     def write_click(e):
-        edit(dataList)
+        edit(dataList.get_dataList())
+        AlertView.open("書き込み成功！！！")
     
-    capture_button = ft.ElevatedButton("データ取込", icon=ft.icons.ADD, on_click=add_click, disabled = False)
+    capture_button = ft.ElevatedButton("データ取込", icon=ft.icons.ADD, on_click=add_click, disabled = True)
     mercari_button = ft.ElevatedButton("メルカリを開く", icon=ft.icons.CLOUD_CIRCLE, on_click=mercari_click)
     write_button = ft.ElevatedButton("エクセルに書き込む", icon=ft.icons.NOTE_ADD, on_click=write_click, disabled=True)
     

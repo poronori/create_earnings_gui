@@ -1,4 +1,5 @@
 from time import sleep
+
 # chromeのドライバーを保持しておくためのクラス
 class Driver:
     driver = None
@@ -14,3 +15,7 @@ class Driver:
             except Exception:
                 Driver.driver = None
         print("ドライバーオフ")
+    
+    def close():
+        if Driver.driver != None:
+            Driver.driver.close()

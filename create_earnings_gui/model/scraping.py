@@ -1,9 +1,11 @@
 from selenium import webdriver
+import chromedriver_binary
 from selenium.webdriver.common.by import By
 from .scraping_data import ScrapingData
 from .driver import Driver as dr
 from ..view.scraping_data_view import ScrapingDataList
 from ..view.alert_view import AlertView
+
 
 def open(url) :
     print('===========Chromeを開く===========')
@@ -47,9 +49,10 @@ def get_mercari_data() :
     address = address1 + ' ' + address2
     
     #商品名はsharow-root内にあるので、別途取得する
-    shadowroot = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[2]/div/div[2]/a/mer-item-object').shadow_root
-    name = shadowroot.find_element(by=By.CLASS_NAME, value='item-label').text
-    
+    #shadowroot = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[2]/div/div[2]/a/mer-item-object').shadow_root
+    #name = shadowroot.find_element(by=By.CLASS_NAME, value='item-label').text
+    name = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[2]/div/div[2]/a/div/div/div[2]/span').text #2024/1/13 エラーのため変更
+
     print(date)
     print(name)
     print(price)

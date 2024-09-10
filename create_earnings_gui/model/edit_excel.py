@@ -37,7 +37,7 @@ def add_create_list(wb, data:ScrapingData):
     customer = data.get_customer()
     address = data.get_address()
     code = data.get_code()
-    current_year = data.date.today().year
+    current_year = datetime.date.today().year
     
     print('購入日：   ' + date)
     print('品名：     ' + name)
@@ -72,7 +72,7 @@ def add_create_list(wb, data:ScrapingData):
                 ws.cell(row = nextRow, column = i)._style = copy(cell._style)
                 value = cell.value
                 #計算式をコピー
-                if str(value)[0] == "=":
+                if len(str(value)) > 0 and str(value)[0] == "=":
                     profit = value.replace(str(maxRow), str(nextRow))
                 i = i + 1
 
@@ -104,6 +104,7 @@ def edit_addressee_atena(ws, dataList):
     ws.cell(row = 2, column = 2).value = postcode
     ws.cell(row = 3, column = 2).value = address1
     ws.cell(row = 4, column = 2).value = address2
+    ws.cell(row = 5, column = 2).value = ''
     ws.cell(row = 6, column = 2).value = customer
 
 # 宛名 圧迫厳禁シート
@@ -116,24 +117,27 @@ def edit_addressee_appaku(ws, dataList):
     for data in dataList:
         
         # 4件目まで挿入
-        while i <= 4:
-            postcode = data.postcode
-            address1 = data.get_address1()
-            address2 = data.get_address2()
-            customer = data.get_customer_full()
+        if i > 4:
+            break
 
-            ws.cell(row = row, column = column).value = postcode
-            ws.cell(row = row + 1, column = column).value = address1
-            ws.cell(row = row + 2, column = column).value = address2
-            ws.cell(row = row + 4, column = column).value = customer
-            
-            #2件目と4件目は下に、3件目は右上に移動
-            if i % 2 == 0:
-                row -= 12
-                column += 4
-            else:
-                row += 12
-            i += 1
+        postcode = data.postcode
+        address1 = data.get_address1()
+        address2 = data.get_address2()
+        customer = data.get_customer_full()
+        ws.cell(row = row, column = column).value = postcode
+        ws.cell(row = row + 1, column = column).value = address1
+        ws.cell(row = row + 2, column = column).value = address2
+        ws.cell(row = row + 3, column = column).value = ''
+        ws.cell(row = row + 4, column = column).value = customer
+        
+        #2件目と4件目は下に、3件目は右上に移動
+        if i % 2 == 0:
+            row -= 12
+            column += 3
+        else:
+            row += 12
+        
+        i += 1
 
 def edit_addressee(ws, dataList):
     
